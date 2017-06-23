@@ -325,7 +325,7 @@ def tf_workspace(path_prefix="", tf_repo_name=""):
   )
 
   patched_http_archive(
-      name = "protobuf",
+      name = "protobuf_archive",
       urls = [
           "http://mirror.bazel.build/github.com/google/protobuf/archive/v3.3.1.tar.gz",
           "https://github.com/google/protobuf/archive/v3.3.1.tar.gz",
@@ -437,22 +437,27 @@ def tf_workspace(path_prefix="", tf_repo_name=""):
   # to point to the protobuf's compiler library.
   native.bind(
       name = "protobuf_clib",
-      actual = "@protobuf//:protoc_lib",
+      actual = "@com_google_protobuf//:protoc_lib",
   )
 
   native.bind(
       name = "protobuf_compiler",
-      actual = "@protobuf//:protoc_lib",
+      actual = "@com_google_protobuf//:protoc_lib",
+  )
+
+  native.bind(
+      name = "protobuf",
+      actual = "@com_google_protobuf//:protobuf",
   )
 
   native.http_archive(
       name = "grpc",
       urls = [
-          "https://github.com/grpc/grpc/archive/v1.0.x.tar.gz",
+          "https://github.com/grpc/grpc/archive/v1.3.x.tar.gz",
       ],
       # Commenting out for quick testing purposes
       # sha256 = "a15f352436ab92c521b1ac11e729e155ace38d0856380cf25048c5d1d9ba8e31",
-      strip_prefix = "grpc-1.0.x",
+      strip_prefix = "grpc-1.3.x",
   )
 
   # protobuf expects //external:grpc_cpp_plugin to point to grpc's
@@ -465,6 +470,17 @@ def tf_workspace(path_prefix="", tf_repo_name=""):
   native.bind(
       name = "grpc_lib",
       actual = "@grpc//:grpc++_unsecure",
+  )
+
+  native.bind(
+      name = "cares",
+      actual = "@submodule_cares//:ares",
+  )
+
+  native.new_local_repository(
+    name = "submodule_cares",
+    path = "third_party/cares",
+    build_file = str(Label("//third_party/cares:cares.BUILD")),
   )
 
   native.new_http_archive(
@@ -532,6 +548,11 @@ def tf_workspace(path_prefix="", tf_repo_name=""):
       patch_file = str(Label("//third_party/boringssl:add_boringssl_s390x.patch")),
   )
 
+  native.bind(
+    name = "libssl",
+    actual = "@boringssl//:ssl",
+  )
+
   native.new_http_archive(
       name = "nanopb_git",
       urls = [
@@ -545,7 +566,7 @@ def tf_workspace(path_prefix="", tf_repo_name=""):
 
   native.bind(
       name = "nanopb",
-      actual = "@nanopb_git//:nanopb",
+      actual = "@grpc//third_party/nanopb:nanopb",
   )
 
   native.new_http_archive(
