@@ -448,11 +448,11 @@ def tf_workspace(path_prefix="", tf_repo_name=""):
   native.http_archive(
       name = "grpc",
       urls = [
-          "https://github.com/grpc/grpc/archive/v1.0.x.tar.gz",
+          "https://github.com/grpc/grpc/archive/v1.1.x.tar.gz",
       ],
       # Commenting out for quick testing purposes
       # sha256 = "a15f352436ab92c521b1ac11e729e155ace38d0856380cf25048c5d1d9ba8e31",
-      strip_prefix = "grpc-1.0.x",
+      strip_prefix = "grpc-1.1.x",
   )
 
   # protobuf expects //external:grpc_cpp_plugin to point to grpc's
@@ -529,6 +529,11 @@ def tf_workspace(path_prefix="", tf_repo_name=""):
       strip_prefix = "boringssl-bbcaa15b0647816b9a1a9b9e0d209cd6712f0105",
   )
 
+  native.bind(
+    name = "libssl",
+    actual = "@boringssl//:ssl",
+  )
+
   native.new_http_archive(
       name = "nanopb_git",
       urls = [
@@ -542,7 +547,7 @@ def tf_workspace(path_prefix="", tf_repo_name=""):
 
   native.bind(
       name = "nanopb",
-      actual = "@nanopb_git//:nanopb",
+      actual = "@grpc//third_party/nanopb:nanopb",
   )
 
   native.new_http_archive(
