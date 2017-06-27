@@ -192,16 +192,16 @@ class GrpcRemoteWorker : public WorkerInterface {
   class RPCState final : public GrpcClientCQTag {
    public:
     RPCState(::grpc::ChannelInterface* channel, ::grpc::CompletionQueue* cq,
-             const ::grpc::RpcMethod& method, const RequestMessage& request,
+             const ::grpc::internal::RpcMethod& method, const RequestMessage& request,
              StatusCallback done, CallOptions* call_opts)
         : call_opts_(call_opts),
-          reader_(channel, cq, method, InitContext(call_opts), request),
-          done_(std::move(done)) {}
+          reader_(::grpc::ClientAsyncResponseReader<ResponseMessage>::internal::Create(channel, cq, method, InitContext(call_opts), request)),
+           done_(std::move(done)) {}
 
     ~RPCState() override {}
 
     void StartRPC(ResponseMessage* response) {
-      reader_.Finish(response, &status_, this);
+      reader_->Finish(response, &status_, this);
     }
 
     void OnCompleted(bool ok) override {
@@ -219,7 +219,7 @@ class GrpcRemoteWorker : public WorkerInterface {
    private:
     CallOptions* call_opts_;
     ::grpc::ClientContext context_;
-    ::grpc::ClientAsyncResponseReader<ResponseMessage> reader_;
+    std::unique_ptr<::grpc::ClientAsyncResponseReader<ResponseMessage>> reader_;
     ::grpc::Status status_;
     StatusCallback done_;
 
@@ -238,7 +238,7 @@ class GrpcRemoteWorker : public WorkerInterface {
   // given callback, `done`, will be called when the RPC completes.
   template <class RequestMessage, class ResponseMessage>
   void IssueRequest(const RequestMessage* request, ResponseMessage* response,
-                    const ::grpc::RpcMethod& method, StatusCallback done,
+                    const ::grpc::internal::RpcMethod& method, StatusCallback done,
                     CallOptions* call_opts = nullptr) {
     auto state = new RPCState<RequestMessage, ResponseMessage>(
         channel_.get(), cq_, method, *request, std::move(done), call_opts);
@@ -246,24 +246,24 @@ class GrpcRemoteWorker : public WorkerInterface {
   }
 
   // Helper function for initializing the RpcMethod objects below.
-  ::grpc::RpcMethod Method(GrpcWorkerMethod id) {
-    return ::grpc::RpcMethod(GrpcWorkerMethodName(id),
-                             ::grpc::RpcMethod::NORMAL_RPC, channel_);
+  ::grpc::internal::RpcMethod Method(GrpcWorkerMethod id) {
+    return ::grpc::internal::RpcMethod(GrpcWorkerMethodName(id),
+                             ::grpc::internal::RpcMethod::NORMAL_RPC, channel_);
   }
 
   SharedGrpcChannelPtr channel_;
   ::grpc::CompletionQueue* cq_;
 
-  const ::grpc::RpcMethod getstatus_;
-  const ::grpc::RpcMethod createworkersession_;
-  const ::grpc::RpcMethod registergraph_;
-  const ::grpc::RpcMethod deregistergraph_;
-  const ::grpc::RpcMethod rungraph_;
-  const ::grpc::RpcMethod cleanupgraph_;
-  const ::grpc::RpcMethod cleanupall_;
-  const ::grpc::RpcMethod recvtensor_;
-  const ::grpc::RpcMethod logging_;
-  const ::grpc::RpcMethod tracing_;
+  const ::grpc::internal::RpcMethod getstatus_;
+  const ::grpc::internal::RpcMethod createworkersession_;
+  const ::grpc::internal::RpcMethod registergraph_;
+  const ::grpc::internal::RpcMethod deregistergraph_;
+  const ::grpc::internal::RpcMethod rungraph_;
+  const ::grpc::internal::RpcMethod cleanupgraph_;
+  const ::grpc::internal::RpcMethod cleanupall_;
+  const ::grpc::internal::RpcMethod recvtensor_;
+  const ::grpc::internal::RpcMethod logging_;
+  const ::grpc::internal::RpcMethod tracing_;
 
   // Support for logging.
   WorkerCacheLogger* logger_;

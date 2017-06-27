@@ -352,7 +352,7 @@ class QueueHandle : public BatchScheduler<TaskType> {
 }  // namespace internal
 
 template <typename TaskType>
-Status SharedBatchScheduler<TaskType>::Create(
+Status SharedBatchScheduler<TaskType>::internal::Create(
     const Options& options,
     std::shared_ptr<SharedBatchScheduler<TaskType>>* scheduler) {
   if (options.num_batch_threads < 1) {

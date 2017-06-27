@@ -94,7 +94,7 @@ TEST(SharedBatchSchedulerTest, Basic) {
           options.num_batch_threads = num_batch_threads;
           std::shared_ptr<SharedBatchScheduler<FakeTask>> scheduler;
           TF_ASSERT_OK(
-              SharedBatchScheduler<FakeTask>::Create(options, &scheduler));
+              SharedBatchScheduler<FakeTask>::internal::Create(options, &scheduler));
 
           // Create two queues.
           SharedBatchScheduler<FakeTask>::QueueOptions queue_options;
@@ -154,7 +154,7 @@ TEST(SharedBatchSchedulerTest, ObeyBatchSizeConstraint) {
     SharedBatchScheduler<FakeTask>::Options options;
     options.num_batch_threads = 2;
     std::shared_ptr<SharedBatchScheduler<FakeTask>> scheduler;
-    TF_ASSERT_OK(SharedBatchScheduler<FakeTask>::Create(options, &scheduler));
+    TF_ASSERT_OK(SharedBatchScheduler<FakeTask>::internal::Create(options, &scheduler));
     SharedBatchScheduler<FakeTask>::QueueOptions queue_options;
     queue_options.max_batch_size = 10;
     queue_options.batch_timeout_micros = 10 * 1000 * 1000;  // 10 seconds
@@ -216,7 +216,7 @@ TEST(SharedBatchSchedulerTest, ObeysTimeout) {
     options.num_batch_threads = 1;
     options.env = &env;
     std::shared_ptr<SharedBatchScheduler<FakeTask>> scheduler;
-    TF_ASSERT_OK(SharedBatchScheduler<FakeTask>::Create(options, &scheduler));
+    TF_ASSERT_OK(SharedBatchScheduler<FakeTask>::internal::Create(options, &scheduler));
     SharedBatchScheduler<FakeTask>::QueueOptions queue_options;
     queue_options.max_batch_size = 4;
     queue_options.batch_timeout_micros = 10;
@@ -272,7 +272,7 @@ TEST(SharedBatchSchedulerTest, ObeysTimeoutWithRealClock) {
   SharedBatchScheduler<FakeTask>::Options options;
   options.num_batch_threads = 2;
   std::shared_ptr<SharedBatchScheduler<FakeTask>> scheduler;
-  TF_ASSERT_OK(SharedBatchScheduler<FakeTask>::Create(options, &scheduler));
+  TF_ASSERT_OK(SharedBatchScheduler<FakeTask>::internal::Create(options, &scheduler));
   SharedBatchScheduler<FakeTask>::QueueOptions queue_options;
   queue_options.max_batch_size = 10;
   queue_options.batch_timeout_micros = 100 * 1000;  // 100 milliseconds
@@ -316,7 +316,7 @@ TEST(SharedBatchSchedulerTest,
     options.num_batch_threads = 2;
     options.env = &env;
     std::shared_ptr<SharedBatchScheduler<FakeTask>> scheduler;
-    TF_ASSERT_OK(SharedBatchScheduler<FakeTask>::Create(options, &scheduler));
+    TF_ASSERT_OK(SharedBatchScheduler<FakeTask>::internal::Create(options, &scheduler));
     SharedBatchScheduler<FakeTask>::QueueOptions queue_options;
     // Set a large batch size, so that we don't hit the batch size limit.
     queue_options.max_batch_size = 100;
@@ -370,7 +370,7 @@ TEST(SharedBatchSchedulerTest, Fairness) {
     options.num_batch_threads = 1;
     options.env = &env;
     std::shared_ptr<SharedBatchScheduler<FakeTask>> scheduler;
-    TF_ASSERT_OK(SharedBatchScheduler<FakeTask>::Create(options, &scheduler));
+    TF_ASSERT_OK(SharedBatchScheduler<FakeTask>::internal::Create(options, &scheduler));
     SharedBatchScheduler<FakeTask>::QueueOptions queue_options;
     queue_options.max_batch_size = 10;
     queue_options.batch_timeout_micros = 1;
@@ -422,7 +422,7 @@ TEST(SharedBatchSchedulerTest, ConstMethods) {
     SharedBatchScheduler<FakeTask>::Options options;
     options.num_batch_threads = 1;
     std::shared_ptr<SharedBatchScheduler<FakeTask>> scheduler;
-    TF_ASSERT_OK(SharedBatchScheduler<FakeTask>::Create(options, &scheduler));
+    TF_ASSERT_OK(SharedBatchScheduler<FakeTask>::internal::Create(options, &scheduler));
     SharedBatchScheduler<FakeTask>::QueueOptions queue_options;
     queue_options.max_batch_size = 2;
     queue_options.batch_timeout_micros = 0;
@@ -492,7 +492,7 @@ TEST(SharedBatchSchedulerTest, OneFullQueueDoesntBlockOtherQueues) {
   SharedBatchScheduler<FakeTask>::Options options;
   options.num_batch_threads = 2;
   std::shared_ptr<SharedBatchScheduler<FakeTask>> scheduler;
-  TF_ASSERT_OK(SharedBatchScheduler<FakeTask>::Create(options, &scheduler));
+  TF_ASSERT_OK(SharedBatchScheduler<FakeTask>::internal::Create(options, &scheduler));
   SharedBatchScheduler<FakeTask>::QueueOptions queue_options;
   queue_options.max_batch_size = 10;
   queue_options.batch_timeout_micros = 0;
@@ -548,7 +548,7 @@ TEST(SharedBatchSchedulerTest, QueueDestructorBlocksUntilAllTasksProcessed) {
     options.num_batch_threads = 1;
     options.env = &env;
     std::shared_ptr<SharedBatchScheduler<FakeTask>> scheduler;
-    TF_ASSERT_OK(SharedBatchScheduler<FakeTask>::Create(options, &scheduler));
+    TF_ASSERT_OK(SharedBatchScheduler<FakeTask>::internal::Create(options, &scheduler));
     SharedBatchScheduler<FakeTask>::QueueOptions queue_options;
     queue_options.max_batch_size = 10;
     queue_options.batch_timeout_micros = 0;

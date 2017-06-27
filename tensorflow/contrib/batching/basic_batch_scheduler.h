@@ -207,7 +207,7 @@ class BasicBatchScheduler : public BatchScheduler<TaskType> {
 // Implementation details follow. API users need not read.
 
 template <typename TaskType>
-Status BasicBatchScheduler<TaskType>::Create(
+Status BasicBatchScheduler<TaskType>::internal::Create(
     const Options& options,
     std::function<void(std::unique_ptr<Batch<TaskType>>)>
         process_batch_callback,
@@ -217,7 +217,7 @@ Status BasicBatchScheduler<TaskType>::Create(
   shared_scheduler_options.num_batch_threads = options.num_batch_threads;
   shared_scheduler_options.env = options.env;
   std::shared_ptr<SharedBatchScheduler<TaskType>> shared_scheduler;
-  TF_RETURN_IF_ERROR(SharedBatchScheduler<TaskType>::Create(
+  TF_RETURN_IF_ERROR(SharedBatchScheduler<TaskType>::internal::Create(
       shared_scheduler_options, &shared_scheduler));
 
   typename SharedBatchScheduler<TaskType>::QueueOptions

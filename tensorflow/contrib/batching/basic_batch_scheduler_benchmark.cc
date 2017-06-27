@@ -168,7 +168,7 @@ void ThroughputBenchmark::ResetState() {
       [this](std::unique_ptr<Batch<BenchmarkBatchTask>> batch) {
         ProcessBatch(std::move(batch));
       };
-  TF_CHECK_OK(BasicBatchScheduler<BenchmarkBatchTask>::Create(
+  TF_CHECK_OK(BasicBatchScheduler<BenchmarkBatchTask>::internal::Create(
       scheduler_options_, process_batch_callback, &scheduler_));
 }
 
@@ -297,7 +297,7 @@ void LatencyBenchmark::ResetState() {
       [this](std::unique_ptr<Batch<BenchmarkBatchTask>> batch) {
         ProcessBatch(std::move(batch));
       };
-  TF_CHECK_OK(BasicBatchScheduler<BenchmarkBatchTask>::Create(
+  TF_CHECK_OK(BasicBatchScheduler<BenchmarkBatchTask>::internal::Create(
       scheduler_options_, process_batch_callback, &scheduler_));
 
   {

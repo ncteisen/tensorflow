@@ -453,11 +453,11 @@ def tf_workspace(path_prefix="", tf_repo_name=""):
   native.http_archive(
       name = "grpc",
       urls = [
-          "https://github.com/grpc/grpc/archive/v1.3.x.tar.gz",
+          "https://github.com/grpc/grpc/archive/master.tar.gz",
       ],
       # Commenting out for quick testing purposes
       # sha256 = "a15f352436ab92c521b1ac11e729e155ace38d0856380cf25048c5d1d9ba8e31",
-      strip_prefix = "grpc-1.3.x",
+      strip_prefix = "grpc-master",
   )
 
   # protobuf expects //external:grpc_cpp_plugin to point to grpc's
@@ -469,7 +469,7 @@ def tf_workspace(path_prefix="", tf_repo_name=""):
 
   native.bind(
       name = "grpc_lib",
-      actual = "@grpc//:grpc++_unsecure",
+      actual = "@grpc//:grpc++",
   )
 
   native.bind(
