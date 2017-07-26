@@ -181,7 +181,6 @@ cc_library(
     srcs = ["grpc_worker_service_impl.cc"],
     hdrs = ["grpc_worker_service_impl.h"],
     deps = [
-        ":grpc_serialization_traits",
         "//tensorflow/core:worker_proto_cc",
         "//tensorflow/core/distributed_runtime:worker_interface",
         "@grpc//:grpc++_unsecure",
@@ -227,17 +226,7 @@ cc_library(
     srcs = ["grpc_master_service_impl.cc"],
     hdrs = ["grpc_master_service_impl.h"],
     deps = [
-        ":grpc_serialization_traits",
         "//tensorflow/core:master_proto_cc",
-        "@grpc//:grpc++_unsecure",
-    ],
-)
-
-cc_library(
-    name = "grpc_serialization_traits",
-    srcs = [],
-    hdrs = ["grpc_serialization_traits.h"],
-    deps = [
         "@grpc//:grpc++_unsecure",
     ],
 )
